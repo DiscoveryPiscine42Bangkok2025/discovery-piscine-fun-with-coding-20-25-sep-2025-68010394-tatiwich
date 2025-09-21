@@ -1,1 +1,14 @@
+#include <stdio.h>
+#include <string.h>
 
+int main()
+{
+    char str[100];
+    printf("enter your word");
+    scanf("%s", str);
+    if (strcmp(str, "cat") == 0)
+    {
+        printf("z");
+    } 
+    return 0;
+}
