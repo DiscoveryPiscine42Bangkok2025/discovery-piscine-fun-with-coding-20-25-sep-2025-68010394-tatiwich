@@ -1,1 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Mini To-Do List</title>
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      padding-top: 50px;
+      background: #f4f4f9;
+      margin: 0;
+    }
 
+    .container {
+      width: 300px;
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+    }
+
+    h2 {
+      text-align: center;
+    }
+
+    #newBtn {
+      width: 100%;
+      padding: 10px;
+      font-size: 16px;
+      border: none;
+      border-radius: 6px;
+      background: #007bff;
+      color: white;
+      cursor: pointer;
+      margin-bottom: 10px;
+    }
+
+    #newBtn:hover {
+      background: #0056b3;
+    }
+
+    #ft_list {
+      display: flex;
+      flex-direction: column-reverse;
+    }
+
+    #ft_list div {
+      background: #f0f0f0;
+      margin-bottom: 5px;
+      padding: 8px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    #ft_list div:hover {
+      background: #e0e0e0;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h2>My To-Do List</h2>
+    <button id="newBtn">New</button>
+    <div id="ft_list"></div>
+  </div>
+
+  <script>
+    $(document).ready(function() {
+      const $ft_list = $("#ft_list");
+
+
+      function loadTodos() {
+        const cookie = document.cookie.split("; ").find(row => row.startsWith("todos="));
+        if (cookie) {
+          const todos = JSON.parse(decodeURIComponent(cookie.split("=")[1]));
+          todos.forEach(todo => createTodoDiv(todo));
+        }
+      }
+
+      
+      function saveTodos() {
+        const todos = $ft_list.children().map(function() { return $(this).text(); }).get();
+        document.cookie = `todos=${encodeURIComponent(JSON.stringify(todos))}; path=/; max-age=${60*60*24*365}`;
+      }
+
+      
+      function createTodoDiv(text) {
+        const $div = $("<div>").text(text);
+        $div.click(function() {
+          if (confirm("Do you want to remove this TO DO?")) {
+            $(this).remove();
+            saveTodos();
+          }
+        });
+        $ft_list.append($div);
+      }
+
+
+      $("#newBtn").click(function() {
+        const todo = prompt("Enter your new TO DO:");
+        if (todo && todo.trim() !== "") {
+          createTodoDiv(todo.trim());
+          saveTodos();
+        }
+      });
+
+    
+      loadTodos();
+    });
+  </script>
+
+</body>
+</html>
